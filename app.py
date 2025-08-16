@@ -28,6 +28,20 @@ if st.button("Start MCP Server"):
     except Exception as e:
         st.exception(e)
 
+# Button to list available MCP server commands
+if st.button("List MCP Commands"):
+    try:
+        import asyncio
+        tools = asyncio.run(mcp_server.get_tools())
+        if tools:
+            st.write("Available commands:")
+            for name in tools.keys():
+                st.write(f"- {name}")
+        else:
+            st.info("No commands available.")
+    except Exception as e:
+        st.exception(e)
+
  # --- Simple UI ---
 symbol = st.text_input("Stock symbol", value="AAPL", max_chars=10)
 
