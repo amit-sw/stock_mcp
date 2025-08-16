@@ -10,11 +10,12 @@ server = FastMCP("Stock MCP Server")
 
 API_URL = "https://www.alphavantage.co/query"
 #API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", "demo")
-API_KEY=st.secrets["ALPHAVANTAGE_API_KEY"]
+#API_KEY=st.secrets["ALPHAVANTAGE_API_KEY"]
+API_KEY = os.getenv("ALPHAVANTAGE_API_KEY") or st.secrets.get("ALPHAVANTAGE_API_KEY")
 
 @server.tool()
 def get_stock_quote(symbol: str) -> dict:
-    """Fetch the latest stock quote for ``symbol`` using the Alpha Vantage demo API."""
+    """Fetch the latest stock quote for ``symbol`` using the Alpha Vantage API."""
     params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": API_KEY}
     logger.info("Fetching quote for %s", symbol)
     response = requests.get(API_URL, params=params, timeout=10)
