@@ -1,6 +1,7 @@
 import os
 import requests
 from fastmcp import FastMCP
+import streamlit as st
 
 from logging_utils import configure_logging
 
@@ -8,8 +9,8 @@ logger = configure_logging("mcp")
 server = FastMCP("Stock MCP Server")
 
 API_URL = "https://www.alphavantage.co/query"
-API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", "demo")
-
+#API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", "demo")
+API_KEY=st.secrets["ALPHAVANTAGE_API_KEY"]
 
 @server.tool()
 def get_stock_quote(symbol: str) -> dict:
