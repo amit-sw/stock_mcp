@@ -20,6 +20,18 @@ def start_mcp_process():
     st.success(f"MCP server started (pid {server_thread.ident})")
     return server_thread
 
+def get_quote(symbol: str):
+    import asyncio
+
+    async def _run():
+        tools=await mcp_server.get_tools()
+        tool=tools.get("get_stock_quote")
+        if not tool:
+            raise Exception("get_stock_quote tool not found")
+        return await tool.run({"symbol": symbol})
+
+    return asyncio.run(_run())
+
 
 if st.button("Start MCP Server"):
     try:
@@ -46,16 +58,8 @@ if st.button("List MCP Commands"):
 symbol = st.text_input("Stock symbol", value="AAPL", max_chars=10)
 
 if st.button("Get Quote"):
-    # Intentionally minimal for a clean restart. We'll wire up the stdio call next.
-    st.info(
-        "On‑demand request logic not implemented yet — starting from scratch as requested."
-    )
-    st.code(
-        """
-        # Pseudocode for next step:
-        # - Spawn MCP process with subprocess using MCP_CMD
-        # - Send a single JSON-RPC request over stdio using MCP_METHOD and {"symbol": SYMBOL}
-        # - Read one response (LSP framing or NDJSON), then show it
-        """,
-        language="python",
-    )
+    try:
+        quote = get_quote(symbol)
+        st.write(quote)
+    except Exception as e:
+        st.exception(e)
